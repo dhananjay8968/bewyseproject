@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_http_methods
 import firebase_admin
 from firebase_admin import credentials, auth
-
+from profiles.models import UserProfile
 # Initialize Firebase Admin SDK with your service account credentials
 cred = credentials.Certificate("./bewyseproject-firebase-adminsdk-56zq8-b5a7693f50.json")
 firebase_admin.initialize_app(cred)
@@ -43,6 +43,10 @@ def register(request):
         user_db.first_name = first_name
         user_db.last_name = last_name
         user_db.save()
+
+
+        profile = UserProfile(user=user_db, first_name=first_name, last_name=last_name)
+        profile.save()
 
         register_api_response = {
             "username": user_db.username,
